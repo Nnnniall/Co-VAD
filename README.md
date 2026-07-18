@@ -19,13 +19,13 @@ After the setup, simply run the following command:
 
 Traing and infer for XD-Violence dataset
 ```
-python xd_train.py
-python xd_test.py
+python src/xd_train.py
+python src/xd_test.py
 ```
 Traing and infer for UCF-Crime dataset
 ```
-python ucf_train.py
-python ucf_test.py
+python src/ucf_train.py
+python src/ucf_test.py
 ```
 
 ## References
