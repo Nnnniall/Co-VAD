@@ -1,0 +1,32 @@
+import argparse
+
+parser = argparse.ArgumentParser(description='Co-VAD')
+parser.add_argument('--seed', default=234, type=int)
+
+parser.add_argument('--embed-dim', default=512, type=int)
+parser.add_argument('--visual-length', default=256, type=int)
+parser.add_argument('--visual-width', default=512, type=int)
+parser.add_argument('--visual-head', default=1, type=int)
+parser.add_argument('--visual-layers', default=1, type=int)
+parser.add_argument('--attn-window', default=64, type=int)
+parser.add_argument('--prompt-prefix', default=10, type=int)
+parser.add_argument('--prompt-postfix', default=10, type=int)
+parser.add_argument('--gate-blend', default=0.6, type=float)
+parser.add_argument('--classes-num', default=7, type=int)
+
+parser.add_argument('--max-epoch', default=10, type=int)
+parser.add_argument('--model-path', default='/home/xuchen/Project/Co-VAD/model/model_xd.pth')
+parser.add_argument('--use-checkpoint', default=False, type=bool)
+parser.add_argument('--checkpoint-path', default='/home/xuchen/Project/Co-VAD/model/checkpoint_xd.pth')
+parser.add_argument('--output-path', default='/home/xuchen/Project/Co-VAD/output/xd_best_record.txt')
+parser.add_argument('--batch-size', default=48, type=int)
+parser.add_argument('--train-list', default='/home/xuchen/Project/Co-VAD/list/xd_train.csv')
+parser.add_argument('--test-list', default='/home/xuchen/Project/Co-VAD/list/xd_test.csv')
+parser.add_argument('--gt-path', default='/home/xuchen/Project/Co-VAD/label/gt_xd.npy')
+parser.add_argument('--gt-segment-path', default='/home/xuchen/Project/Co-VAD/label/gt_xd_segment.npy')
+parser.add_argument('--gt-label-path', default='/home/xuchen/Project/Co-VAD/label/gt_xd_label.npy')
+parser.add_argument('--prompt-json', default='/home/xuchen/Project/Co-VAD/src/prompt/xd_prompt.json')
+
+parser.add_argument('--lr', default=1e-5)
+parser.add_argument('--scheduler-rate', default=0.1)
+parser.add_argument('--scheduler-milestones', default=[3, 6, 10])
