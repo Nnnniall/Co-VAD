@@ -73,7 +73,13 @@ def IVCL(logits, text_features, visual_features, labels, lengths, device):
     hard_fg_features_all = []
     easy_bg_features_all = []
     for i in range(logits.shape[0]):
-        tmp_top, idx_top = torch.topk(scores_region_inner[i], k=int(logits.shape[1] / 64 + 1), largest=True)
+        length_i = int(lengths[i])
+        k = min(int(logits.shape[1] / 64 + 1), length_i)
+        inner_scores = scores_region_inner[i, :length_i]
+        if int((inner_scores > 0).sum().item()) < k:
+            tmp_top, idx_top = torch.topk(logits[i, :length_i], k=k, largest=True)
+        else:
+            tmp_top, idx_top = torch.topk(inner_scores, k=k, largest=True)
         tmp_top = torch.mean(tmp_top).view(1)
         hard_fg_scores = torch.cat([hard_fg_scores, tmp_top], dim=0)
 
