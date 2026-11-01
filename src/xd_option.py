@@ -11,7 +11,6 @@ parser.add_argument('--visual-layers', default=1, type=int)
 parser.add_argument('--attn-window', default=64, type=int)
 parser.add_argument('--prompt-prefix', default=10, type=int)
 parser.add_argument('--prompt-postfix', default=10, type=int)
-parser.add_argument('--gate-blend', default=0.6, type=float)
 parser.add_argument('--classes-num', default=7, type=int)
 
 parser.add_argument('--max-epoch', default=10, type=int)

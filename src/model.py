@@ -93,7 +93,6 @@ class CLIPVAD(nn.Module):
                  attn_window: int,
                  prompt_prefix: int,
                  prompt_postfix: int,
-                 gate_blend: float,
                  device):
         super().__init__()
         self.num_class = num_class
@@ -103,7 +102,6 @@ class CLIPVAD(nn.Module):
         self.attn_window = attn_window
         self.prompt_prefix = prompt_prefix
         self.prompt_postfix = prompt_postfix
-        self.gate_alpha = gate_blend
         self.device = device
 
         self.temporal = Transformer(
@@ -264,16 +262,11 @@ class CLIPVAD(nn.Module):
         hard_prompt_features = self.hard_prompt(prompt_text)  # [C, N, D]
         hard_prompt_features_norm = hard_prompt_features / hard_prompt_features.norm(dim=-1, keepdim=True)
 
-        # Center gate to [-1, 1]: high-score snippets are enhanced while low-score
-        # snippets are mildly down-weighted. Detach logits1 so logits2-path losses do
-        # not directly update logits1 branch.
-        gate = 2.0 * torch.sigmoid(logits1.detach()) - 1.0  # [B, T, 1]
-        visual_features_enhanced = visual_features + self.gate_alpha * (visual_features * gate)  # [B, T, D]
-        visual_features_norm = visual_features_enhanced / visual_features_enhanced.norm(dim=-1, keepdim=True)
+        visual_features_norm = visual_features / visual_features.norm(dim=-1, keepdim=True)
 
         # Detach again to avoid logits2-related gradients pushing logits1 through attention.
         logits_attn = logits1.permute(0, 2, 1)
-        visual_attn = logits_attn @ visual_features_enhanced
+        visual_attn = logits_attn @ visual_features
         visual_attn = visual_attn / visual_attn.norm(dim=-1, keepdim=True)
 
         scores = []
@@ -308,4 +301,4 @@ class CLIPVAD(nn.Module):
         logits2 = visual_features_norm @ soft_text_features_norm.type(visual_features_norm.dtype) / 0.07
         
         # Return enhanced visual features for downstream mining/losses (e.g., IVCL)
-        return soft_prompt_features, selected_embeddings, visual_features_enhanced, logits1, logits2
+        return soft_prompt_features, selected_embeddings, visual_features, logits1, logits2
